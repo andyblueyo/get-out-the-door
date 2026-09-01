@@ -1,0 +1,71 @@
+.checklist-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 16px 40px;
+}
+
+.checklist-chrome {
+  width: 100%;
+  max-width: 370px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.checklist-chrome a,
+.checklist-chrome button {
+  color: var(--muted);
+  text-decoration: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.checklist-chrome a:hover,
+.checklist-chrome button:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.checklist-error {
+  width: 100%;
+  max-width: 370px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  background: var(--band);
+  border: 1px solid var(--hairline);
+  border-left: 2px solid var(--ink);
+}
+
+/* fetching-weather ellipsis */
+@keyframes gc-blink {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.fetching-dots span {
+  animation: gc-blink 1.2s infinite;
+}
+
+.fetching-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.fetching-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
