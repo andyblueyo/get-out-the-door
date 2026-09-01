@@ -38,7 +38,7 @@ export default function SignupPage() {
     <main className="ticket-page">
       <div className="ticket">
         <header className="ticket-header">
-          <h1 className="ticket-title">Threshold</h1>
+          <h1 className="ticket-title">gtfod</h1>
           <p className="ticket-flourish">before you go</p>
         </header>
         <div className="ticket-body">

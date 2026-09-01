@@ -1,11 +1,12 @@
-# Threshold — before you go
+# gtfod — before you go
 
 A morning departure checklist you reach by tapping an NFC tag on your way out the
 door. You design a **routine** as a branching flowchart (weather, day of week,
 yes/no questions); each morning the app walks that graph and prints the day's
 list of things to grab, styled as a restaurant guest check.
 
-"Threshold" is a **working name**. Don't build brand assets around it.
+The app is named **"gtfod"** — it stands for "get the \*heck out the door"
+(it replaced the earlier working name "Threshold").
 
 ---
 
