@@ -47,8 +47,8 @@ export default function Ticket({
   return (
     <div className="gc">
       <header className="gc-head">
-        <div className="gc-title">gtfod</div>
-        <div className="gc-flourish">before you go</div>
+        <div className="gc-title">gtfotd</div>
+        <div className="gc-flourish">get the *heck out the door</div>
       </header>
 
       <div className="gc-meta">

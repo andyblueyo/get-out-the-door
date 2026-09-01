@@ -38,8 +38,8 @@ export default function SignupPage() {
     <main className="ticket-page">
       <div className="ticket">
         <header className="ticket-header">
-          <h1 className="ticket-title">gtfod</h1>
-          <p className="ticket-flourish">before you go</p>
+          <h1 className="ticket-title">gtfotd</h1>
+          <p className="ticket-flourish">get the *heck out the door</p>
         </header>
         <div className="ticket-body">
           <p className="ticket-section-label">Sign up</p>

@@ -18,7 +18,7 @@ const flourish = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'gtfod — get the *heck out the door',
+  title: 'gtfotd — get the *heck out the door',
   description: 'A morning departure checklist, printed like a guest check.',
 }
 
