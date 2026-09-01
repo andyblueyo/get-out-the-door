@@ -18,6 +18,19 @@ export interface GeocodeHit {
   country_code?: string
 }
 
+interface ForecastResponse {
+  daily?: {
+    precipitation_probability_max?: number[]
+    temperature_2m_max?: number[]
+    temperature_2m_min?: number[]
+    weather_code?: number[]
+  }
+}
+
+interface GeocodeResponse {
+  results?: GeocodeHit[]
+}
+
 export async function fetchForecast(
   latitude: number,
   longitude: number
@@ -35,7 +48,12 @@ export async function fetchForecast(
 
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Open-Meteo responded ${res.status}`)
-  const data = await res.json()
+  let data: ForecastResponse
+  try {
+    data = (await res.json()) as ForecastResponse
+  } catch {
+    throw new Error('Couldn’t reach the weather service — try again.')
+  }
   const daily = data?.daily
   if (!daily?.temperature_2m_max?.length) {
     throw new Error('Open-Meteo returned no daily forecast')
@@ -43,7 +61,7 @@ export async function fetchForecast(
   return {
     precipProbability: daily.precipitation_probability_max?.[0] ?? 0,
     tempMaxF: Math.round(daily.temperature_2m_max[0]),
-    tempMinF: Math.round(daily.temperature_2m_min[0]),
+    tempMinF: Math.round(daily.temperature_2m_min?.[0] ?? 0),
     code: daily.weather_code?.[0] ?? 0,
   }
 }
@@ -57,7 +75,12 @@ export async function geocodePlace(name: string): Promise<GeocodeHit | null> {
 
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Geocoding responded ${res.status}`)
-  const data = await res.json()
+  let data: GeocodeResponse
+  try {
+    data = (await res.json()) as GeocodeResponse
+  } catch {
+    throw new Error('Couldn’t reach the weather service — try again.')
+  }
   const hit = data?.results?.[0]
   if (!hit) return null
   return {
