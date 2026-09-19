@@ -94,12 +94,13 @@ interval while the ticket is open.
   dataset (data.ny.gov, resource `39hk-dx4f`), grouped by transfer complex.
   It's app data, not a DB table — `profiles.subway_stop_id` references it by
   convention, not a foreign key. Regenerate by re-fetching that dataset.
-- Live arrivals come from MTA's GTFS-Realtime feeds
-  (`lib/subway/realtime.ts`), which **require a free MTA developer API key**.
-  Sign up at https://api.mta.info/ and set `MTA_API_KEY` in `.env.local` and
-  in Vercel project settings — **server-only, never `NEXT_PUBLIC_*`** (it's
-  read only by the `/api/subway/departures` route handler, never shipped to
-  the browser, unlike the Supabase publishable key).
+- Live arrivals come from MTA's GTFS-Realtime feeds (`lib/subway/realtime.ts`).
+  Like Open-Meteo, **no account or API key** — confirmed live against
+  https://api.mta.info/#/subwayRealTimeFeeds, whose own page states
+  "Accounts and API keys are no longer required." (Older tutorials/READMEs
+  online still show an `x-api-key` header from a since-retired requirement —
+  don't reintroduce it.) Fetched server-side purely to keep protobuf
+  decoding off the client, same reasoning as any other backend data shaping.
 - `lib/subway/predict.ts` is the pure "what does the ticket print" module —
   same shape as `lib/routine/walk.ts`: no React, no fetch, unit tested
   directly (`lib/subway/predict.test.ts`).

@@ -1,9 +1,10 @@
-// Live NYC subway arrivals from MTA's GTFS-Realtime feeds. Server-only:
-// needs MTA_API_KEY, which must never reach the browser bundle.
-//
-// Requires a free MTA developer account and API key — see
-// https://api.mta.info/. Set MTA_API_KEY in .env.local and in Vercel
-// project settings (server env, not NEXT_PUBLIC_*).
+// Live NYC subway arrivals from MTA's GTFS-Realtime feeds. As of the MTA's
+// current developer page (https://api.mta.info/#/subwayRealTimeFeeds,
+// checked live), "Accounts and API keys are no longer required to access
+// these feeds" — confirmed with a keyless request against every feed group
+// below. Fetched server-side (not from the browser) purely to keep the
+// protobuf decoding and route/direction matching off the client, same as
+// any other backend data shaping — not because of a secret.
 
 import GtfsRealtimeBindings from 'gtfs-realtime-bindings'
 import type Long from 'long'
@@ -20,17 +21,10 @@ function asNumber(time: number | Long | null | undefined): number | null {
 /**
  * Fetches and decodes every feed that covers `lines`, and returns the
  * upcoming arrivals for exactly those (route, stopId, direction) triples.
- * Throws if MTA_API_KEY is missing or a feed request fails.
+ * Throws if a feed request fails.
  */
 export async function fetchArrivals(lines: TrackedLine[]): Promise<Arrival[]> {
   if (lines.length === 0) return []
-
-  const apiKey = process.env.MTA_API_KEY
-  if (!apiKey) {
-    throw new Error(
-      'MTA_API_KEY is not configured — get a free key at https://api.mta.info/ and set it in your env.'
-    )
-  }
 
   // route -> stopId+direction targets we care about, e.g. "635S"
   const wantByRoute = new Map<string, Set<string>>()
@@ -46,10 +40,7 @@ export async function fetchArrivals(lines: TrackedLine[]): Promise<Arrival[]> {
 
   await Promise.all(
     feedUrls.map(async (url) => {
-      const res = await fetch(url, {
-        headers: { 'x-api-key': apiKey },
-        cache: 'no-store',
-      })
+      const res = await fetch(url, { cache: 'no-store' })
       if (!res.ok) {
         throw new Error(`MTA feed responded ${res.status} for ${url}`)
       }
