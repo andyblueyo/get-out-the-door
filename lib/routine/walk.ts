@@ -102,7 +102,7 @@ function outgoing(
   )
 }
 
-function evalWeather(
+export function evalWeather(
   cfg: WeatherNodeConfig,
   weather: WeatherFacts | null
 ): boolean | null {

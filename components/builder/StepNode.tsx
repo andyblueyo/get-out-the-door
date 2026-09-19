@@ -35,6 +35,12 @@ const TYPE_LABEL: Record<NodeType, string> = {
 
 const DAY_LETTERS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
+const METRIC_LABEL: Record<WeatherNodeConfig['metric'], string> = {
+  precip: 'rain %',
+  temp_max: 'high °F',
+  temp_min: 'low °F',
+}
+
 function configHeight(type: NodeType): number {
   return type === 'weather' || type === 'day' ? CONFIG_H : 0
 }
@@ -69,39 +75,52 @@ export function startOutPoint() {
 
 interface StepNodeProps {
   node: RoutineNode
-  selected: boolean
+  selected?: boolean
   hasYes: boolean
   hasNo: boolean
   hasIn: boolean
-  onPointerDownNode: (e: React.PointerEvent) => void
-  onStartConnect: (branch: BranchLabel, e: React.PointerEvent) => void
-  onChange: (patch: Partial<RoutineNode>) => void
+  onPointerDownNode?: (e: React.PointerEvent) => void
+  onStartConnect?: (branch: BranchLabel, e: React.PointerEvent) => void
+  onChange?: (patch: Partial<RoutineNode>) => void
+  /** Static rendering (landing-page demo): plain text instead of inputs, no handlers. */
+  readOnly?: boolean
+  /** Branch the previewed morning takes — its row is highlighted. */
+  taken?: BranchLabel | null
+  /** Not reached by the previewed morning. */
+  dimmed?: boolean
 }
 
 export default function StepNode({
   node,
-  selected,
+  selected = false,
   hasYes,
   hasNo,
   hasIn,
   onPointerDownNode,
   onStartConnect,
   onChange,
+  readOnly = false,
+  taken = null,
+  dimmed = false,
 }: StepNodeProps) {
   const isItem = node.type === 'item'
   const inTop = isItem ? ITEM_H / 2 : BAND_H + BODY_H / 2
   const tag = 'tag' in node.config ? (node.config.tag ?? '') : ''
 
   function setConfig(patch: object) {
-    onChange({ config: { ...node.config, ...patch } })
+    onChange?.({ config: { ...node.config, ...patch } })
   }
+
+  const className =
+    `step-node${isItem ? ' item' : ''}${selected ? ' selected' : ''}` +
+    `${readOnly ? ' readonly' : ''}${dimmed ? ' dimmed' : ''}`
 
   return (
     <div
-      className={`step-node${isItem ? ' item' : ''}${selected ? ' selected' : ''}`}
+      className={className}
       style={{ left: node.x, top: node.y, width: nodeWidth(node) }}
       data-node-id={node.id}
-      onPointerDown={onPointerDownNode}
+      onPointerDown={readOnly ? undefined : onPointerDownNode}
     >
       {/* input handle — filled when some branch reaches this node */}
       <span
@@ -113,58 +132,86 @@ export default function StepNode({
       {!isItem && (
         <div className="sn-band">
           <span className="sn-type">{TYPE_LABEL[node.type]}</span>
-          <input
-            className="sn-tag"
-            value={tag}
-            placeholder="tag"
-            maxLength={8}
-            onChange={(e) => setConfig({ tag: e.target.value.toUpperCase() })}
-            onPointerDown={(e) => e.stopPropagation()}
-          />
+          {readOnly ? (
+            <span className="sn-tag">{tag}</span>
+          ) : (
+            <input
+              className="sn-tag"
+              value={tag}
+              placeholder="tag"
+              maxLength={8}
+              onChange={(e) => setConfig({ tag: e.target.value.toUpperCase() })}
+              onPointerDown={(e) => e.stopPropagation()}
+            />
+          )}
         </div>
       )}
 
       <div className="sn-body" style={isItem ? { minHeight: ITEM_H - 2 } : undefined}>
-        <input
-          className="sn-label"
-          value={node.label}
-          placeholder={isItem ? 'Item…' : 'Condition…'}
-          onChange={(e) => onChange({ label: e.target.value })}
-          onPointerDown={(e) => e.stopPropagation()}
-        />
+        {readOnly ? (
+          <span className="sn-label">{node.label}</span>
+        ) : (
+          <input
+            className="sn-label"
+            value={node.label}
+            placeholder={isItem ? 'Item…' : 'Condition…'}
+            onChange={(e) => onChange?.({ label: e.target.value })}
+            onPointerDown={(e) => e.stopPropagation()}
+          />
+        )}
       </div>
 
-      {node.type === 'weather' && (
-        <div className="sn-config" onPointerDown={(e) => e.stopPropagation()}>
-          <select
-            value={(node.config as WeatherNodeConfig).metric}
-            onChange={(e) => setConfig({ metric: e.target.value })}
-          >
-            <option value="precip">rain %</option>
-            <option value="temp_max">high °F</option>
-            <option value="temp_min">low °F</option>
-          </select>
-          <select
-            value={(node.config as WeatherNodeConfig).op}
-            onChange={(e) => setConfig({ op: e.target.value })}
-          >
-            <option value="gte">&ge;</option>
-            <option value="lte">&le;</option>
-          </select>
-          <input
-            type="number"
-            value={(node.config as WeatherNodeConfig).value}
-            onChange={(e) => setConfig({ value: Number(e.target.value) })}
-          />
-        </div>
-      )}
+      {node.type === 'weather' &&
+        (readOnly ? (
+          <div className="sn-config">
+            <span className="sn-static">
+              {METRIC_LABEL[(node.config as WeatherNodeConfig).metric]}
+            </span>
+            <span className="sn-static">
+              {(node.config as WeatherNodeConfig).op === 'lte' ? '≤' : '≥'}
+            </span>
+            <span className="sn-static">{(node.config as WeatherNodeConfig).value}</span>
+          </div>
+        ) : (
+          <div className="sn-config" onPointerDown={(e) => e.stopPropagation()}>
+            <select
+              value={(node.config as WeatherNodeConfig).metric}
+              onChange={(e) => setConfig({ metric: e.target.value })}
+            >
+              {Object.entries(METRIC_LABEL).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <select
+              value={(node.config as WeatherNodeConfig).op}
+              onChange={(e) => setConfig({ op: e.target.value })}
+            >
+              <option value="gte">&ge;</option>
+              <option value="lte">&le;</option>
+            </select>
+            <input
+              type="number"
+              value={(node.config as WeatherNodeConfig).value}
+              onChange={(e) => setConfig({ value: Number(e.target.value) })}
+            />
+          </div>
+        ))}
 
       {node.type === 'day' && (
-        <div className="sn-config" onPointerDown={(e) => e.stopPropagation()}>
+        <div
+          className="sn-config"
+          onPointerDown={readOnly ? undefined : (e) => e.stopPropagation()}
+        >
           {DAY_LETTERS.map((letter, i) => {
             const days = (node.config as DayNodeConfig).days ?? []
             const on = days.includes(i)
-            return (
+            return readOnly ? (
+              <span key={i} className={`day-toggle${on ? ' on' : ''}`}>
+                {letter}
+              </span>
+            ) : (
               <button
                 key={i}
                 className={`day-toggle${on ? ' on' : ''}`}
@@ -183,24 +230,32 @@ export default function StepNode({
 
       {!isItem && (
         <>
-          <div className="sn-branch">
+          <div className={`sn-branch${taken === 'yes' ? ' taken' : ''}`}>
             <span>Yes</span>
             <span
               className={`sn-handle out${hasYes ? ' filled' : ''}`}
-              onPointerDown={(e) => {
-                e.stopPropagation()
-                onStartConnect('yes', e)
-              }}
+              onPointerDown={
+                readOnly
+                  ? undefined
+                  : (e) => {
+                      e.stopPropagation()
+                      onStartConnect?.('yes', e)
+                    }
+              }
             />
           </div>
-          <div className="sn-branch">
+          <div className={`sn-branch${taken === 'no' ? ' taken' : ''}`}>
             <span>No</span>
             <span
               className={`sn-handle out${hasNo ? ' filled' : ''}`}
-              onPointerDown={(e) => {
-                e.stopPropagation()
-                onStartConnect('no', e)
-              }}
+              onPointerDown={
+                readOnly
+                  ? undefined
+                  : (e) => {
+                      e.stopPropagation()
+                      onStartConnect?.('no', e)
+                    }
+              }
             />
           </div>
         </>

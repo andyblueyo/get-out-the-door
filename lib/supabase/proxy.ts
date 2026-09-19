@@ -32,7 +32,9 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims()
   const user = data?.claims
 
+  // '/' is public: app/page.tsx shows the landing page when signed out.
   if (!user &&
+      request.nextUrl.pathname !== '/' &&
       !request.nextUrl.pathname.startsWith('/login') &&
       !request.nextUrl.pathname.startsWith('/signup') &&
       !request.nextUrl.pathname.startsWith('/auth')) {

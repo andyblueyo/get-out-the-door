@@ -32,17 +32,21 @@ export default function EdgesLayer({
   height,
   nodes,
   edges,
-  selectedEdgeId,
+  selectedEdgeId = null,
   onSelectEdge,
-  connecting,
+  connecting = null,
+  edgeClassName,
 }: {
   width: number
   height: number
   nodes: RoutineNode[]
   edges: RoutineEdge[]
-  selectedEdgeId: string | null
-  onSelectEdge: (id: string) => void
-  connecting: ConnectingState | null
+  selectedEdgeId?: string | null
+  /** omit for a static rendering — edges then aren't clickable */
+  onSelectEdge?: (id: string) => void
+  connecting?: ConnectingState | null
+  /** extra class per edge, e.g. "off" for a branch the previewed morning skips */
+  edgeClassName?: (edge: RoutineEdge) => string | undefined
 }) {
   const byId = new Map(nodes.map((n) => [n.id, n]))
 
@@ -67,17 +71,23 @@ export default function EdgesLayer({
         const to = inHandlePoint(target)
         const d = orthoPath(from.x, from.y, to.x, to.y)
         const selected = edge.id === selectedEdgeId
+        const extra = edgeClassName?.(edge)
         return (
           <g key={edge.id}>
-            <path className={`edge${selected ? ' selected' : ''}`} d={d} />
             <path
-              className="edge-hit"
+              className={`edge${selected ? ' selected' : ''}${extra ? ` ${extra}` : ''}`}
               d={d}
-              onClick={(e) => {
-                e.stopPropagation()
-                onSelectEdge(edge.id)
-              }}
             />
+            {onSelectEdge && (
+              <path
+                className="edge-hit"
+                d={d}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSelectEdge(edge.id)
+                }}
+              />
+            )}
           </g>
         )
       })}

@@ -2,7 +2,7 @@
 
 import type { NodeType } from '@/lib/routine/types'
 
-const PALETTE: { type: NodeType; title: string; hint: string }[] = [
+export const PALETTE: { type: NodeType; title: string; hint: string }[] = [
   { type: 'weather', title: 'Weather', hint: 'Branch on the forecast — rain %, high, low.' },
   { type: 'day', title: 'Day', hint: 'Branch on the day of the week.' },
   { type: 'ask', title: 'Ask', hint: 'A yes/no question each morning.' },

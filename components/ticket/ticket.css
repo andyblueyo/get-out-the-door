@@ -348,5 +348,6 @@ button.gc-row {
   letter-spacing: 0.35em;
   text-indent: 0.35em;
   text-transform: uppercase;
+  white-space: nowrap;
   pointer-events: none;
 }

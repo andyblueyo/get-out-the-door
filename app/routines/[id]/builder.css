@@ -410,6 +410,47 @@
   cursor: default;
 }
 
+/* read-only nodes (landing-page demo): same geometry, no controls */
+.step-node.readonly,
+.step-node.readonly .sn-band,
+.step-node.readonly .sn-body,
+.step-node.readonly .sn-handle {
+  cursor: default;
+}
+
+.step-node.readonly {
+  transition: opacity 0.15s;
+}
+
+.step-node.dimmed {
+  opacity: 0.38;
+}
+
+span.sn-tag,
+span.sn-label {
+  display: block;
+}
+
+.sn-static {
+  font-size: 10.5px;
+  line-height: 1.5;
+  padding: 1px 6px;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+}
+
+span.day-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.sn-branch.taken {
+  color: var(--ink);
+  background: var(--band);
+}
+
 /* ---- preview drawer ---- */
 
 .drawer {
