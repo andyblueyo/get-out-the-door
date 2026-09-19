@@ -4,6 +4,7 @@
 
 import type { Answers, RoutineGraph, TicketItem } from './routine/types'
 import type { StoredWeather } from './weather'
+import type { TrackedLine } from './subway/types'
 
 export type Json =
   | string
@@ -26,6 +27,12 @@ export interface Database {
           manual_place: string | null
           latitude: number | null
           longitude: number | null
+          subway_enabled: boolean
+          subway_show_walk: boolean
+          subway_show_leave_by: boolean
+          subway_stop_id: string | null
+          subway_stop_name: string | null
+          subway_lines: TrackedLine[]
           created_at: string
           updated_at: string
         }
@@ -37,6 +44,12 @@ export interface Database {
           manual_place?: string | null
           latitude?: number | null
           longitude?: number | null
+          subway_enabled?: boolean
+          subway_show_walk?: boolean
+          subway_show_leave_by?: boolean
+          subway_stop_id?: string | null
+          subway_stop_name?: string | null
+          subway_lines?: TrackedLine[]
           updated_at?: string
         }
         Relationships: []

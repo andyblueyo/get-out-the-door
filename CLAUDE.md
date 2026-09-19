@@ -53,6 +53,12 @@ profiles
   manual_place  text
   latitude      double precision
   longitude     double precision
+  subway_enabled        boolean NOT NULL DEFAULT false
+  subway_show_walk      boolean NOT NULL DEFAULT true
+  subway_show_leave_by  boolean NOT NULL DEFAULT true
+  subway_stop_id        text     -- lib/subway/stations.json complex id, e.g. "602"
+  subway_stop_name      text
+  subway_lines          jsonb NOT NULL DEFAULT '[]'  -- [{route,stopId,direction:"N"|"S"}]
   created_at, updated_at  timestamptz
 
 routines
@@ -76,6 +82,27 @@ daily_state
   completed_at timestamptz
   updated_at   timestamptz
 ```
+
+**Note:** `daily_state` deliberately has no subway column. Train times move
+minute to minute, so unlike weather they're never cached in `daily_state` —
+the checklist fetches them live from `/api/subway/departures` on a short
+interval while the ticket is open.
+
+### Subway (MTA GTFS-Realtime)
+
+- `lib/subway/stations.json` is a static snapshot of MTA's public stations
+  dataset (data.ny.gov, resource `39hk-dx4f`), grouped by transfer complex.
+  It's app data, not a DB table — `profiles.subway_stop_id` references it by
+  convention, not a foreign key. Regenerate by re-fetching that dataset.
+- Live arrivals come from MTA's GTFS-Realtime feeds
+  (`lib/subway/realtime.ts`), which **require a free MTA developer API key**.
+  Sign up at https://api.mta.info/ and set `MTA_API_KEY` in `.env.local` and
+  in Vercel project settings — **server-only, never `NEXT_PUBLIC_*`** (it's
+  read only by the `/api/subway/departures` route handler, never shipped to
+  the browser, unlike the Supabase publishable key).
+- `lib/subway/predict.ts` is the pure "what does the ticket print" module —
+  same shape as `lib/routine/walk.ts`: no React, no fetch, unit tested
+  directly (`lib/subway/predict.test.ts`).
 
 **`routines.graph`**
 

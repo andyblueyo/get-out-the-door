@@ -88,6 +88,121 @@
   text-overflow: ellipsis;
 }
 
+/* next-train block */
+.gc-subway {
+  padding: 10px 20px 2px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.gc-subway-head {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-light);
+  margin-bottom: 6px;
+}
+
+.gc-subway-stop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+
+.gc-subway-stop > span:first-child {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gc-subway-walk {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.gc-leave {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  padding: 9px 0;
+  margin-bottom: 4px;
+}
+
+.gc-leave-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-light);
+}
+
+.gc-leave-time {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.gc-leave-line {
+  text-align: right;
+  padding-top: 2px;
+}
+
+.gc-leave-route {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gc-leave-dir {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.gc-train-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px solid var(--grid-fine);
+}
+
+.gc-train-badge {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gc-train-dir {
+  flex: 1;
+  min-width: 0;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.gc-train-times {
+  text-align: right;
+  flex: none;
+}
+
+.gc-train-mins {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.gc-train-leave {
+  display: block;
+  font-size: 9px;
+  color: var(--muted-light);
+}
+
 /* ruled item rows */
 .gc-rows {
   position: relative;

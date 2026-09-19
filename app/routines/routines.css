@@ -280,3 +280,95 @@
   font-size: 12px;
   color: var(--muted);
 }
+
+/* ---- subway card ---- */
+
+.subway-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.subway-switch-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.subway-switch {
+  flex: none;
+  display: flex;
+  border: 1.5px solid var(--ink);
+  height: 34px;
+}
+
+.subway-switch.small {
+  height: 28px;
+}
+
+.subway-switch button {
+  min-width: 48px;
+  padding: 0 10px;
+  border: none;
+  border-right: 1.5px solid var(--ink);
+  background: var(--paper);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.subway-switch button:last-child {
+  border-right: none;
+}
+
+.subway-switch button.selected {
+  background: var(--band);
+  color: var(--ink);
+}
+
+.subway-switch button:disabled {
+  cursor: default;
+}
+
+.subway-subrows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 16px 0 18px;
+  padding-left: 16px;
+  border-left: 1.5px solid var(--rule);
+}
+
+.subway-subrows.disabled .subway-sub-label {
+  color: var(--muted-light);
+}
+
+.subway-subrows.disabled .subway-switch {
+  border-color: var(--hairline);
+}
+
+.subway-subrows.disabled .subway-switch button {
+  border-right-color: var(--hairline);
+  color: var(--muted-light);
+}
+
+.subway-subrows.disabled .subway-switch button.selected {
+  background: var(--grid-fine);
+}
+
+.subway-sub-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.subway-sub-desc {
+  font-size: 11px;
+  color: var(--muted-light);
+  margin-top: 2px;
+}

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import RoutinesLedger from '@/components/routines/RoutinesLedger'
 import LocationCard from '@/components/routines/LocationCard'
+import SubwayCard from '@/components/routines/SubwayCard'
 import SignOutButton from '@/components/SignOutButton'
 import './routines.css'
 
@@ -39,6 +40,7 @@ export default async function RoutinesPage() {
       <RoutinesLedger userId={userId} routines={routines} />
 
       {profileRes.data && <LocationCard profile={profileRes.data} />}
+      {profileRes.data && <SubwayCard profile={profileRes.data} />}
 
       <div className="page-chrome page-chrome-bottom">
         <SignOutButton />

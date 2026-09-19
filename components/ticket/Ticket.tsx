@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react'
 import type { TicketItem } from '@/lib/routine/types'
+import type { SubwaySectionData } from '@/lib/subway/types'
 import './ticket.css'
 
 export interface AskPrompt {
@@ -14,6 +15,8 @@ interface TicketProps {
   weatherLabel: string
   checkNo: string
   items: TicketItem[]
+  /** next-train block, printed above the item rows — omitted while off or loading */
+  subway?: SubwaySectionData | null
   /** unanswered ask nodes, rendered as question rows above the items */
   asks?: AskPrompt[]
   onToggle?: (id: string) => void
@@ -31,6 +34,7 @@ export default function Ticket({
   weatherLabel,
   checkNo,
   items,
+  subway,
   asks = [],
   onToggle,
   onAnswer,
@@ -65,6 +69,54 @@ export default function Ticket({
           <strong>{checkNo}</strong>
         </div>
       </div>
+
+      {subway && subway.lines.length > 0 && (
+        <div className="gc-subway">
+          <div className="gc-subway-head">
+            <span>Next train</span>
+          </div>
+          <div className="gc-subway-stop">
+            <span>{subway.stopName}</span>
+            {subway.walkMinutes != null && (
+              <span className="gc-subway-walk">{subway.walkMinutes} min walk</span>
+            )}
+          </div>
+
+          {subway.leaveBy && (
+            <div className="gc-leave">
+              <div>
+                <div className="gc-leave-label">Leave by</div>
+                <div className="gc-leave-time">
+                  {subway.leaveBy.leaveInMinutes <= 0
+                    ? 'now'
+                    : `in ${subway.leaveBy.leaveInMinutes}m`}
+                </div>
+              </div>
+              <div className="gc-leave-line">
+                <div className="gc-leave-route">{subway.leaveBy.route} train</div>
+                <div className="gc-leave-dir">{subway.leaveBy.directionLabel}</div>
+              </div>
+            </div>
+          )}
+
+          {subway.lines.map((line) => (
+            <div className="gc-train-row" key={line.route}>
+              <span className="gc-train-badge">{line.route}</span>
+              <span className="gc-train-dir">{line.directionLabel}</span>
+              <span className="gc-train-times">
+                <span className="gc-train-mins">
+                  {line.times.map((t) => `${t}′`).join(' · ')}
+                </span>
+                {line.leaveInMinutes != null && (
+                  <span className="gc-train-leave">
+                    leave {line.leaveInMinutes <= 0 ? 'now' : `in ${line.leaveInMinutes}m`}
+                  </span>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="gc-rows">
         {allSet && <div className="gc-stamp">All set</div>}

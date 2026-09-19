@@ -9,7 +9,13 @@ import { graphNeedsWeather, walk } from '@/lib/routine/walk'
 import { fetchForecast, toStoredWeather, type StoredWeather } from '@/lib/weather'
 import type { Database } from '@/lib/database.types'
 import type { Answers, TicketItem } from '@/lib/routine/types'
+import type { SubwaySectionData } from '@/lib/subway/types'
 import './checklist.css'
+
+// Train times move minute to minute, so unlike weather this is never
+// persisted to daily_state — just refetched on a short interval while the
+// ticket is open.
+const SUBWAY_REFRESH_MS = 30_000
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Routine = Database['public']['Tables']['routines']['Row']
@@ -85,6 +91,7 @@ export default function ChecklistScreen({
   const [day, setDay] = useState<DayState | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [banner, setBanner] = useState<string | null>(null)
+  const [subway, setSubway] = useState<SubwaySectionData | null>(null)
   const dayRef = useRef<DayState | null>(null)
   dayRef.current = day
 
@@ -211,6 +218,35 @@ export default function ChecklistScreen({
     document.addEventListener('visibilitychange', onVisible)
     return () => document.removeEventListener('visibilitychange', onVisible)
   }, [routine, initialState, userId, generate])
+
+  // Live next-train data: fetched through our own API route (never MTA
+  // directly — that needs a server-side key) and refreshed on a short timer.
+  useEffect(() => {
+    if (!profile?.subway_enabled) {
+      setSubway(null)
+      return
+    }
+    let cancelled = false
+    const load = async () => {
+      try {
+        const res = await fetch('/api/subway/departures')
+        if (!res.ok) {
+          if (!cancelled) setSubway(null)
+          return
+        }
+        const data = (await res.json()) as SubwaySectionData
+        if (!cancelled) setSubway(data)
+      } catch {
+        if (!cancelled) setSubway(null)
+      }
+    }
+    void load()
+    const id = setInterval(load, SUBWAY_REFRESH_MS)
+    return () => {
+      cancelled = true
+      clearInterval(id)
+    }
+  }, [profile?.subway_enabled])
 
   // Pending questions are derived, not stored: re-walking with the saved
   // answers tells us which asks are still open.
@@ -348,6 +384,7 @@ export default function ChecklistScreen({
         weatherLabel={day.weather?.summary ?? '—'}
         checkNo={checkNoFrom(day.generated_at)}
         items={day.items}
+        subway={subway}
         asks={completed ? [] : pendingAsks}
         onToggle={completed ? undefined : toggle}
         onAnswer={completed ? undefined : answer}

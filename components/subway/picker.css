@@ -1,0 +1,191 @@
+.picker-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.picker-search {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+}
+
+.picker-search:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+
+.picker-list {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.picker-station {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 4px;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.picker-dot {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+}
+
+.picker-station.selected .picker-dot {
+  background: var(--ink);
+}
+
+.picker-station-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.picker-station-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.picker-station-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.picker-trains-head {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-light);
+}
+
+.picker-lines {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0 4px;
+}
+
+.picker-line-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.picker-line-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.picker-box {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  border: 1.5px solid var(--ink);
+  position: relative;
+}
+
+.picker-box.checked::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--ink);
+}
+
+.picker-line-badge {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.picker-line-badge.small {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+}
+
+.picker-line-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.picker-directions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0 0 27px;
+}
+
+.picker-directions button {
+  padding: 6px 10px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  font: inherit;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.picker-directions button.selected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.picker-preview {
+  margin: 14px 0 18px;
+  padding: 12px 14px;
+  background: var(--grid-fine);
+  border: 1px solid var(--hairline);
+}
+
+.picker-preview-head {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-light);
+  margin-bottom: 8px;
+}
+
+.picker-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 12px;
+}
